@@ -15,6 +15,7 @@ func main() {
 		i, _ := strconv.Atoi(line)
 		res := (i / 3) - 2
 		acc = acc + res
+		// this is for second input
 		for res > 0 && res > 3 {
 			res = (res / 3) - 2
 			if res > 0 {
