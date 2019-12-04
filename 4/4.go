@@ -12,7 +12,6 @@ func main() {
 	curr := a
 	count := 0
 	for curr < b {
-		//	fmt.Println(curr)
 		curr++
 		si := strconv.Itoa(curr)
 		legit := true
