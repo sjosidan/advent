@@ -35,8 +35,6 @@ func main() {
 		}
 		if legit {
 			count = count + 1
-			fmt.Println(si)
-			fmt.Println(v1, v2, v3, v4, v5, v6)
 		}
 	}
 	fmt.Println(count)
