@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
-
+<!-- Start of enlight-support Zendesk Widget script -->
+    <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=acde72a8-4a3a-49b2-814e-eb56170aa0ea"> </script>
+<!-- End of enlight-support Zendesk Widget script -->
 
 <body>
 
