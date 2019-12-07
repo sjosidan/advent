@@ -25,7 +25,6 @@ func main() {
 
 	//arr := []int{0, 1, 2, 3, 4}
 	arr := []int{5, 6, 7, 8, 9}
-	//for true {
 	for _, a := range permutations(arr) {
 		wg := new(sync.WaitGroup)
 
@@ -75,10 +74,7 @@ func main() {
 
 	}
 
-	//}
-
 	fmt.Println("MAIN Sleeping")
-
 	fmt.Println(globalMax)
 
 }
