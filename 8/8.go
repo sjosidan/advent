@@ -60,7 +60,6 @@ func getFinalPicture(picture [][]int, layerSize int) (finalLayer []int) {
 
 func printPicture(finalLayer []int, layerSize int, bufferSize int) {
 	for i := 0; i < layerSize; i++ {
-
 		if finalLayer[i] == 1 {
 			fmt.Print("#")
 		} else {
@@ -76,7 +75,6 @@ func printPicture(finalLayer []int, layerSize int, bufferSize int) {
 func chunkPixels(pixels []int, layerSize int) (picture [][]int) {
 	for i := 0; i < len(pixels); i += layerSize {
 		end := i + layerSize
-
 		if end > len(pixels) {
 			end = len(pixels)
 		}
@@ -100,7 +98,6 @@ func getMaxZeroLayer(picture [][]int, layerSize int) {
 			case 2:
 				twoCount = twoCount + 1
 			}
-
 		}
 		if zeroCount < fewestZeros {
 			fmt.Println("new boss", layNo, zeroCount, oneCount*twoCount)
