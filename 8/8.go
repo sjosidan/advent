@@ -12,7 +12,6 @@ func main() {
 	scanner.Scan()
 	line := scanner.Text()
 
-	//var picture [][]int
 	pictureX := 25
 	pictureY := 6
 	layerSize := pictureX * pictureY
@@ -25,14 +24,13 @@ func main() {
 
 	picture := chunkPixels(pixelSlice, layerSize)
 	//taskA
-	getMaxZeroLayer(picture)
+	getMaxZeroLayer(picture, layerSize)
 	//taskB
 	finalPicture := getFinalPicture(picture, layerSize)
-	printPicture(finalPicture)
+	printPicture(finalPicture, layerSize, pictureX)
 }
 
 func getFinalPicture(picture [][]int, layerSize int) (finalLayer []int) {
-	//var fullPicture []int
 	layers := len(picture)
 	for i := 0; i < layerSize; i++ {
 		for l := 0; l < layers; l++ {
@@ -60,15 +58,15 @@ func getFinalPicture(picture [][]int, layerSize int) (finalLayer []int) {
 	return
 }
 
-func printPicture(finalLayer []int) {
-	for i := 0; i < 150; i++ {
+func printPicture(finalLayer []int, layerSize int, bufferSize int) {
+	for i := 0; i < layerSize; i++ {
 
 		if finalLayer[i] == 1 {
 			fmt.Print("#")
 		} else {
 			fmt.Print(" ")
 		}
-		if (i+1)%25 == 0 {
+		if (i+1)%bufferSize == 0 {
 			fmt.Println(" ")
 		}
 
@@ -87,8 +85,8 @@ func chunkPixels(pixels []int, layerSize int) (picture [][]int) {
 	return
 }
 
-func getMaxZeroLayer(picture [][]int) {
-	fewestZeros := 150
+func getMaxZeroLayer(picture [][]int, layerSize int) {
+	fewestZeros := layerSize
 	for layNo, layer := range picture {
 		zeroCount := 0
 		oneCount := 0
