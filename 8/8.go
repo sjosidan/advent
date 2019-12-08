@@ -24,7 +24,9 @@ func main() {
 	}
 
 	picture := chunkPixels(pixelSlice, layerSize)
+	//taskA
 	getMaxZeroLayer(picture)
+	//taskB
 	finalPicture := getFinalPicture(picture, layerSize)
 	printPicture(finalPicture)
 }
