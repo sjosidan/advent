@@ -40,6 +40,7 @@ func main() {
 		//fmt.Println(b)
 		go run(b, &input1, &output, "COMP1", wg)
 		input1 <- 1
+		fmt.Println("out", <-output)
 
 		/*
 			input2 := make(chan int, a[1])
@@ -203,7 +204,7 @@ func run(b []int, inputChannel *chan int, outputChannel *chan int, name string, 
 			}
 			return outputParam
 		default:
-			fmt.Println("Unknown,", op)
+			//fmt.Println("Unknown,", op)
 			i = i + 4
 		}
 
@@ -240,8 +241,8 @@ func permutations(arr []int) [][]int {
 }
 
 func getParamterOutput(modParam int, relativeBase int, index int, program []int, pos int) (resultingAdress int) {
-	//fmt.Println(program[index])
-	//fmt.Println(modParam)
+	fmt.Println(program[index])
+	fmt.Println(modParam)
 	switch modParam {
 	case 0:
 		//fmt.Println("0, value of value ")
