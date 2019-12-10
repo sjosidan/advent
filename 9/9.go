@@ -24,72 +24,29 @@ func main() {
 	}
 
 	//arr := []int{0, 1, 2, 3, 4}
-	arr := []int{5, 6, 7, 8, 9}
-	for _, a := range permutations(arr) {
-		wg := new(sync.WaitGroup)
-		b := append(orig[:0:0], orig...)
-		memory := make([]int, 2000)
-		for i := 0; i < 2000; i++ {
-			memory[i] = 0
-		}
-		b = append(b, memory...)
-		wg.Add(1)
-		input1 := make(chan int)
-
-		output := make(chan int, a[1])
-		//fmt.Println(b)
-		go run(b, &input1, &output, "COMP1", wg)
-		input1 <- 1
-		fmt.Println("out", <-output)
-
-		/*
-			input2 := make(chan int, a[1])
-			input3 := make(chan int, a[2])
-			input4 := make(chan int, a[3])
-			input5 := make(chan int, a[4])
-
-			b := append(orig[:0:0], orig...)
-			wg.Add(1)
-
-			go run(b, &input1, &input2, "COMP1", wg)
-
-			b = append(orig[:0:0], orig...)
-			wg.Add(1)
-
-			go run(b, &input2, &input3, "COMP2", wg)
-
-			b = append(orig[:0:0], orig...)
-			wg.Add(1)
-			go run(b, &input3, &input4, "COMP3", wg)
-
-			b = append(orig[:0:0], orig...)
-			wg.Add(1)
-			go run(b, &input4, &input5, "COMP4", wg)
-
-			b = append(orig[:0:0], orig...)
-			wg.Add(1)
-			go run(b, &input5, &input1, "COMP5", wg)
-			input1 <- a[0]
-			input2 <- a[1]
-			input3 <- a[2]
-			input4 <- a[3]
-			input5 <- a[4]
-			input1 <- 0
-
-			fmt.Println(a)
-
-			wg.Wait()
-
-			close(input1)
-			close(input2)
-			close(input3)
-			close(input4)
-			close(input5)
-		*/
+	//arr := []int{5, 6, 7, 8, 9}
+	//for _, a := range permutations(arr) {
+	wg := new(sync.WaitGroup)
+	b := append(orig[:0:0], orig...)
+	memory := make([]int, 200000)
+	for i := 0; i < 200000; i++ {
+		memory[i] = 0
 	}
+	b = append(b, memory...)
+	wg.Add(1)
+	input1 := make(chan int)
 
-	fmt.Println("MAIN Sleeping")
-	fmt.Println(globalMax)
+	output := make(chan int)
+	//fmt.Println(b)
+	run(b, &input1, &output, "COMP1", wg)
+	//input1 <- 1
+	//fmt.Println("out", <-output)
+	wg.Wait()
+
+	close(input1)
+	close(output)
+
+	//}
 
 }
 
@@ -102,37 +59,49 @@ func run(b []int, inputChannel *chan int, outputChannel *chan int, name string, 
 	outputParam := 0
 	i := 0
 	relativeBase := 0
-	//fmt.Println(relativeBase)
 	for i < len(b) {
+
 		op := b[i] % 100
-		modeB := b[i] / 1000
+		modeA := b[i] / 10000
+		modeB := b[i] / 1000 % 10
 		modeC := b[i] / 100 % 10
-		//fmt.Println(op)
 		switch op {
 		case 1:
 			//add
+			//fmt.Println(b[i], b[i+1], b[i+2], b[i+3])
 			first := getParamterOutput(modeC, relativeBase, i, b, 1)
 			second := getParamterOutput(modeB, relativeBase, i, b, 2)
-			//fmt.Println(b[i], b[i+1], b[i+2], b[i+3])
-			b[b[i+3]] = first + second
+			third := getParamterOutput(modeA, relativeBase, i, b, 3)
+			b[third] = b[first] + b[second]
 			i = i + 4
 
 		case 2:
 			//Multiply
+			//fmt.Println(b[i], b[i+1], b[i+2], b[i+3])
 			first := getParamterOutput(modeC, relativeBase, i, b, 1)
 			second := getParamterOutput(modeB, relativeBase, i, b, 2)
+			third := getParamterOutput(modeA, relativeBase, i, b, 3)
 
-			b[b[i+3]] = first * second
+			b[third] = b[first] * b[second]
+
 			i = i + 4
 		case 3:
-			inputStuff := <-*inputChannel
-			b[b[i+1]] = inputStuff
+			//fmt.Println(b[i], b[i+1])
+			//inputStuff := <-*inputChannel
+
+			//first := getParamterOutput(modeC, relativeBase, i, b, 1)
+
+			b[b[i+1]+relativeBase] = 2
 			i = i + 2
 
 		case 4:
-			first := getParamterOutput(modeC, relativeBase, i, b, 1)
+			//fmt.Println(b[i], b[i+1])
 
+			first := getParamterOutput(modeC, relativeBase, i, b, 1)
+			fmt.Println("ooout", b[first])
 			outputParam = b[first]
+			//b[first] = b[i+1]
+
 			if name == "COMP5" {
 				if !firstOneRunning {
 					fmt.Println(name, "Done with last one", b[b[i+1]])
@@ -140,72 +109,89 @@ func run(b []int, inputChannel *chan int, outputChannel *chan int, name string, 
 						globalMax = b[first]
 					}
 				} else {
-					*outputChannel <- b[first]
+					//	*outputChannel <- b[first]
 				}
 
-			} else {
-				*outputChannel <- b[first]
 			}
 			i = i + 2
 
 		case 5:
+			//fmt.Println(b[i], b[i+1], b[i+2])
+
 			//JUMP if true
 			first := getParamterOutput(modeC, relativeBase, i, b, 1)
 
 			second := getParamterOutput(modeB, relativeBase, i, b, 2)
-
-			if first != 0 {
-				i = second
+			if b[first] != 0 {
+				i = b[second]
 			} else {
 				i = i + 3
 			}
 		case 6:
 			//JUMP if false
+			//	fmt.Println(b[i], b[i+1], b[i+2])
+
 			first := getParamterOutput(modeC, relativeBase, i, b, 1)
 
 			second := getParamterOutput(modeB, relativeBase, i, b, 2)
 
-			if first == 0 {
-				i = second
+			if b[first] == 0 {
+				i = b[second]
 			} else {
 				i = i + 3
 			}
 		case 7:
+			//fmt.Println(b[i], b[i+1], b[i+2], b[i+3])
+
 			first := getParamterOutput(modeC, relativeBase, i, b, 1)
 
 			second := getParamterOutput(modeB, relativeBase, i, b, 2)
+			third := getParamterOutput(modeA, relativeBase, i, b, 3)
 
-			if first < second {
-				b[b[i+3]] = 1
+			if b[first] < b[second] {
+				b[third] = 1
 			} else {
-				b[b[i+3]] = 0
+				b[third] = 0
 			}
 			i = i + 4
 
 		case 8:
+			//			fmt.Println(b[i], b[i+1], b[i+2], b[i+3])
+
 			first := getParamterOutput(modeC, relativeBase, i, b, 1)
 
 			second := getParamterOutput(modeB, relativeBase, i, b, 2)
+			third := getParamterOutput(modeA, relativeBase, i, b, 3)
 
-			if first == second {
-				b[b[i+3]] = 1
+			if b[first] == b[second] {
+				b[third] = 1
 			} else {
-				b[b[i+3]] = 0
+				b[third] = 0
 			}
 			i = i + 4
 		case 9:
-			fmt.Println("REL", b[i], b[i+1])
-			relativeBase = relativeBase + b[i+1]
+			//first := getParamterOutput(modeC, relativeBase, i, b, 1)
+			switch modeC {
+			case 0:
+				relativeBase = relativeBase + b[b[i+1]]
+			case 1:
+				relativeBase = relativeBase + b[i+1]
 
+			case 2:
+				relativeBase = relativeBase + b[relativeBase+b[i+1]]
+
+			}
 			i = i + 2
 		case 99:
 			if name == "COMP1" {
 				firstOneRunning = false
 			}
+			fmt.Println("ooou", outputParam, b[881])
 			return outputParam
 		default:
-			//fmt.Println("Unknown,", op)
+			fmt.Println("Unknown,", op)
 			i = i + 4
+			return 3
 		}
 
 	}
@@ -241,19 +227,18 @@ func permutations(arr []int) [][]int {
 }
 
 func getParamterOutput(modParam int, relativeBase int, index int, program []int, pos int) (resultingAdress int) {
-	fmt.Println(program[index])
-	fmt.Println(modParam)
 	switch modParam {
 	case 0:
 		//fmt.Println("0, value of value ")
 		resultingAdress = program[index+pos]
+
 	case 1:
 		//fmt.Println("1, stay the same")
 		resultingAdress = index + pos
 	case 2:
-		fmt.Println("3, Relativebase")
-		fmt.Println(index + relativeBase)
 		resultingAdress = relativeBase + program[index+pos]
+	default:
+		fmt.Println("ERROR", program[index], program[index+1], program[index+2], program[index+3])
 	}
 	return
 }
