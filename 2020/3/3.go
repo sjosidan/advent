@@ -35,17 +35,18 @@ func main() {
 }
 
 func cruise(terrain map[string]string, right int, down int) (trees int) {
-	a := 0
+	offpist := 0
 	width := 31
 	trees = 0
 	level := 0
 	for level < 1000 {
 
-		key := strconv.Itoa(level) + "-" + strconv.Itoa(a)
-		a = (a + right) % width
+		key := strconv.Itoa(level) + "-" + strconv.Itoa(offpist)
+
 		if terrain[key] == "tree" {
 			trees = trees + 1
 		}
+		offpist = (offpist + right) % width
 		level = level + down
 	}
 	fmt.Println("Nbr of Trees", trees)
