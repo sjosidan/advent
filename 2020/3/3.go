@@ -19,10 +19,8 @@ func main() {
 			key := strconv.Itoa(row) + "-" + strconv.Itoa(i)
 			fmt.Println(row, i)
 			if string(line[i]) == "#" {
-				fmt.Println("tree")
 				terrain[key] = "tree"
 			} else {
-				fmt.Println("open")
 				terrain[key] = "open"
 			}
 		}
