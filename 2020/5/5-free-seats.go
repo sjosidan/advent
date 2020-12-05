@@ -15,6 +15,10 @@ type Seat struct {
 	id     int
 }
 
+/*
+* This solution Indexes all available seats by removing boarded passangers from the the AirPlane map.
+ */
+
 func main() {
 	airPlane := make(map[string]Seat)
 
