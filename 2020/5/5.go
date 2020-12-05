@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 type Seat struct {
@@ -14,48 +16,37 @@ type Seat struct {
 }
 
 func main() {
-	rowRange := makeRange(0, 127)
-	colRange := makeRange(0, 7)
-	var searchRange []int
 	airPlane := make(map[string]Seat)
 
 	//BUILD AN AIRPLANE
 	for i := 0; i < 128; i++ {
-		searchRange = rowRange
-
-		var rowString string
-		for len(searchRange) != 1 {
-			lowerSide := searchRange[0 : len(searchRange)/2]
-			upperSide := searchRange[len(searchRange)/2 : len(searchRange)]
-			resultLower := sort.SearchInts(lowerSide, i)
-			if resultLower == len(lowerSide) {
-				searchRange = upperSide
-				rowString = rowString + "B"
-			} else {
-				searchRange = lowerSide
-				rowString = rowString + "F"
-			}
+		l := strconv.FormatInt(int64(i), 2)
+		switch len(l) {
+		case 1:
+			l = "000000" + l
+		case 2:
+			l = "00000" + l
+		case 3:
+			l = "0000" + l
+		case 4:
+			l = "000" + l
+		case 5:
+			l = "00" + l
+		case 6:
+			l = "0" + l
 		}
-
-		searchRange = colRange
+		row := strings.Replace(strings.Replace(l, "0", "F", 10), "1", "B", 10)
 
 		for j := 0; j < 8; j++ {
-			searchRange = colRange
-			var columnString string
-			for len(searchRange) != 1 {
-				lowerSide := searchRange[0 : len(searchRange)/2]
-				upperSide := searchRange[len(searchRange)/2 : len(searchRange)]
-				resultLower := sort.SearchInts(lowerSide, j)
-				if resultLower == len(lowerSide) {
-					searchRange = upperSide
-					columnString = columnString + "R"
-				} else {
-					searchRange = lowerSide
-					columnString = columnString + "L"
-				}
+			l := strconv.FormatInt(int64(j), 2)
+			switch len(l) {
+			case 1:
+				l = "00" + l
+			case 2:
+				l = "0" + l
 			}
-			totti := rowString + columnString
-			airPlane[totti] = Seat{row: i, column: j, id: (i * 8) + (j)}
+			column := strings.Replace(strings.Replace(l, "0", "L", 10), "1", "R", 10)
+			airPlane[row+column] = Seat{row: i, column: j, id: (i * 8) + (j)}
 		}
 	}
 
@@ -87,12 +78,4 @@ func main() {
 		fmt.Println(k, airPlane[k])
 	}
 
-}
-
-func makeRange(min int, max int) []int {
-	a := make([]int, max-min+1)
-	for i := range a {
-		a[i] = min + i
-	}
-	return a
 }
