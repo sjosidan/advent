@@ -59,23 +59,20 @@ func main() {
 		delete(airPlane, line)
 	}
 
-	// Print the Remaning seats
-	/*
-		for a, v := range airPlane {
-			fmt.Println(a, v)
-		}
-	*/
-
 	//SORT AND PRINT
-	keys := make([]string, 0, len(airPlane))
+	freeSeats := make([]int, 0, len(airPlane))
 
-	for k := range airPlane {
-		keys = append(keys, k)
+	for _, v := range airPlane {
+		freeSeats = append(freeSeats, v.id)
 	}
-	sort.Strings(keys)
+	sort.Ints(freeSeats)
 
-	for _, k := range keys {
-		fmt.Println(k, airPlane[k])
+	for i, k := range freeSeats {
+		if i != 0 && (freeSeats[i-1]-k != -1) {
+			fmt.Println("YOUR SEAT", k)
+			break
+		}
+
 	}
 
 }
