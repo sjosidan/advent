@@ -9,7 +9,7 @@ import (
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	questions := make([]rune, 0)
+	var questions string
 	var totals int
 	newTeam := true
 	for scanner.Scan() {
@@ -17,12 +17,9 @@ func main() {
 		line := scanner.Text()
 		if line == "" {
 			totals = totals + len(questions)
-			questions = make([]rune, 0)
 			newTeam = true
 		} else if newTeam {
-			for _, v := range line {
-				questions = append(questions, v)
-			}
+			questions = line
 			newTeam = false
 		} else {
 			refinedQuestions := make([]rune, 0)
@@ -31,7 +28,7 @@ func main() {
 					refinedQuestions = append(refinedQuestions, v)
 				}
 			}
-			questions = refinedQuestions
+			questions = string(refinedQuestions)
 		}
 
 	}
