@@ -9,17 +9,13 @@ import (
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-
 	questions := make([]rune, 0)
-
 	var totals int
 	newTeam := true
 	for scanner.Scan() {
 
 		line := scanner.Text()
 		if line == "" {
-			fmt.Println("newTeam")
-			fmt.Println("old ", len(questions))
 			totals = totals + len(questions)
 			questions = make([]rune, 0)
 			newTeam = true
@@ -40,8 +36,7 @@ func main() {
 
 	}
 	//Add last team
-	fmt.Println("old ", len(questions))
 	totals = totals + len(questions)
-
+	//Print totals
 	fmt.Println("total questions", totals)
 }
