@@ -37,7 +37,34 @@ func main() {
 	}
 	fmt.Println("onevolt\t", oneVolters)
 	fmt.Println("threevolt\t", threeVolters)
-	isNeeded(stream)
+	onediff := true
+	firstIndex := 1
+	tot := 1
+	for i, _ := range stream {
+		if i > 1 && (len(stream)) > i {
+			if stream[i]-stream[i-1] == 1 {
+				if !onediff {
+					firstIndex = i
+				}
+				onediff = true
+			} else {
+				if onediff {
+					switch len(stream[firstIndex-1 : i]) {
+					case 3:
+						tot = tot * 2
+					case 4:
+						tot = tot * 4
+					case 5:
+						tot = tot * 7
+					default:
+						fmt.Println("NO VAL LEN ", len(stream[firstIndex-1:i]))
+					}
+				}
+				onediff = false
+			}
+		}
+	}
+	fmt.Println(tot)
 }
 
 func minMax(array []int) (int, int) {
@@ -52,21 +79,4 @@ func minMax(array []int) (int, int) {
 		}
 	}
 	return min, max
-}
-
-func isNeeded(myNiceSlice []int) (result int) {
-	result = 0
-
-	for i, a := range myNiceSlice {
-		if (i != 0) && (i < len(myNiceSlice)-2) {
-			if myNiceSlice[i+1]-myNiceSlice[i-1] < 4 {
-				//copycat := myNiceSlice
-				copycat := append(myNiceSlice[:i], myNiceSlice[i+1:]...)
-				fmt.Println(a, "is not needed", copycat)
-				result = 1 + isNeeded(copycat)
-			}
-		}
-	}
-
-	return
 }
