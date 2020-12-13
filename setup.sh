@@ -9,8 +9,8 @@ if [ -z "$1" ]
             then
                 echo "file exists"
             else
-                cp templates/template.go 2021/$1/$1.go
-                cp templates/aochelpers.go 2021/$1/helpers.go
+                cp templates/template.go 2020/$1/$1.go
+                cp templates/aochelpers.go 2020/$1/helpers.go
                 touch 2020/$1/input.txt
                 touch 2020/$1/input2.txt
                 touch 2020/$1/input3.txt
