@@ -41,8 +41,6 @@ func main() {
 		}
 	}
 
-	fmt.Println(now)
-	fmt.Println(busses)
 	taskA(now, busses)
 	taskB(busses)
 
@@ -57,21 +55,37 @@ func taskB(busses []Bus) {
 		works := true
 		for _, k := range busses {
 			if works && ((i+k.globalOffset)%(k.departs) == 0) {
-				if !contains(steps, k.departs) {
+				if !Contains(steps, k.departs) {
 					steps = append(steps, k.departs)
-					fmt.Println(i, " Works for Bus ", k.name, " ")
-					step = sum(steps)
+					step = Sum(steps)
 				}
 			} else {
 				works = false
 			}
 		}
 		if works {
-			fmt.Println("Fine at", i)
 			break
 		}
 		i = i + step
 	}
+	fmt.Print("Time\t")
+	for _, k := range busses {
+		fmt.Print("Bus ", k.name, "\t")
+	}
+	fmt.Println("")
+
+	for j := i; j < i+busses[len(busses)-1].globalOffset+1; j++ {
+		fmt.Print(j, "\t")
+		for _, k := range busses {
+			if j%k.departs == 0 {
+				fmt.Print("D\t")
+			} else {
+				fmt.Print(".\t")
+			}
+		}
+		fmt.Println("")
+	}
+	fmt.Println("Answer B:", i)
 }
 
 func taskA(now int, busses []Bus) {
@@ -80,7 +94,7 @@ func taskA(now int, busses []Bus) {
 	for {
 		for k, v := range busses {
 			if wait%v.departs == 0 {
-				fmt.Println("Can depart bus", k, " at ", wait, " ans ", (wait-now)*v.departs)
+				fmt.Println("Answer A: Can depart bus", k, "at", wait, "ans", (wait-now)*v.departs)
 				foundbus = true
 			}
 		}
@@ -89,20 +103,4 @@ func taskA(now int, busses []Bus) {
 		}
 		wait++
 	}
-}
-
-func contains(s []int, e int) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-func sum(array []int) int {
-	result := 1
-	for _, v := range array {
-		result *= v
-	}
-	return result
 }
