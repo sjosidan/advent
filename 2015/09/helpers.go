@@ -135,3 +135,65 @@ func GetSubstringsOfLength(bigString string, length int) (substrings []string) {
 	return
 
 }
+
+/*
+func HeapPermutation(a []string, size int) (result []string) {
+	if size == 1 {
+		result = a
+		fmt.Println(a)
+	}
+
+	for i := 0; i < size; i++ {
+		HeapPermutation(a, size-1)
+
+		if size%2 == 1 {
+			a[0], a[size-1] = a[size-1], a[0]
+		} else {
+			a[i], a[size-1] = a[size-1], a[i]
+		}
+	}
+	return
+}
+
+*/
+var ans [][]string
+
+func PermuteStringsSlice(nums []string) [][]string {
+	ans = make([][]string, 0)
+	cp := make([]string, len(nums))
+	copy(cp, nums)
+	ans = append(ans, cp)
+
+	if len(nums) < 2 {
+		return ans
+	}
+
+	heap(nums, len(nums), len(nums))
+	return ans
+}
+
+func heap(nums []string, n, l int) {
+
+	for i := 0; ; i++ {
+		if n > 2 {
+			heap(nums, n-1, l)
+		}
+		if i == n-1 {
+			break
+		}
+		if n%2 == 0 {
+			swap(nums, i, n-1)
+		} else {
+			swap(nums, 0, n-1)
+		}
+		cp := make([]string, len(nums))
+		copy(cp, nums)
+		ans = append(ans, cp)
+	}
+}
+
+func swap(nums []string, i, j int) {
+	tmp := nums[j]
+	nums[j] = nums[i]
+	nums[i] = tmp
+}
