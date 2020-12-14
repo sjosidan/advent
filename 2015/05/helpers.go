@@ -106,3 +106,15 @@ func join(ins []rune, c rune) (result []string) {
 	}
 	return
 }
+
+func GetSubstringsOfLength(bigString string, length int) (substrings []string) {
+
+	for i, _ := range bigString {
+		if i+length < len(bigString)+1 {
+			substrings = append(substrings, bigString[i:i+length])
+		}
+	}
+
+	return
+
+}

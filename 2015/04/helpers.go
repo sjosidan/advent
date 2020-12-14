@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"math"
 )
@@ -105,4 +107,9 @@ func join(ins []rune, c rune) (result []string) {
 		result = append(result, string(ins[:i])+string(c)+string(ins[i:]))
 	}
 	return
+}
+
+func GetMD5Hash(text string) string {
+	hash := md5.Sum([]byte(text))
+	return hex.EncodeToString(hash[:])
 }
