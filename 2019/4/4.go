@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	a := 356261
-	b := 846303
+	a := 138307
+	b := 654504
 	curr := a
 	count := 0
 	for curr < b {
