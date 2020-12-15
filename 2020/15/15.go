@@ -25,21 +25,8 @@ func main() {
 	lastSpok := 2
 	for {
 		fmt.Println(i, lastSpok)
-		if _, ok := gameMap[lastSpok]; ok {
 
-			newVal := gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-1] -
-				gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-1]
-
-			if newV, ok := gameMap[lastSpok]; ok {
-				newV.lastSpoken = append(gameMap[newVal].lastSpoken, i)
-				newV.timesSpoken = len(gameMap[newVal].lastSpoken)
-			} else {
-				nx := Number{lastSpoken: []int{i}, timesSpoken: 1}
-				gameMap[newVal] = &nx
-			}
-			input = append(input, newVal)
-			lastSpok = newVal
-		} else {
+		if _, ok := gameMap[lastSpok]; !ok {
 
 			if _, ok := gameMap[0]; ok {
 				nx := Number{lastSpoken: []int{0}, timesSpoken: 1}
@@ -54,6 +41,20 @@ func main() {
 			input = append(input, 0)
 
 			lastSpok = 0
+		} else {
+
+			newVal := gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-1] -
+				gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-1]
+
+			if newV, ok := gameMap[lastSpok]; ok {
+				newV.lastSpoken = append(gameMap[newVal].lastSpoken, i)
+				newV.timesSpoken = len(gameMap[newVal].lastSpoken)
+			} else {
+				nx := Number{lastSpoken: []int{i}, timesSpoken: 1}
+				gameMap[newVal] = &nx
+			}
+			input = append(input, newVal)
+			lastSpok = newVal
 		}
 		i++
 		if i == 2020 {
