@@ -26,9 +26,9 @@ func main() {
 	for {
 		fmt.Println(i, lastSpok)
 
-		if _, ok := gameMap[lastSpok]; !ok {
+		if len(gameMap[lastSpok].lastSpoken) == 1 {
 
-			if _, ok := gameMap[0]; ok {
+			if _, ok := gameMap[0]; !ok {
 				nx := Number{lastSpoken: []int{0}, timesSpoken: 1}
 
 				gameMap[0] = &nx
@@ -44,9 +44,9 @@ func main() {
 		} else {
 
 			newVal := gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-1] -
-				gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-1]
+				gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-2]
 
-			if newV, ok := gameMap[lastSpok]; ok {
+			if newV, ok := gameMap[newVal]; ok {
 				newV.lastSpoken = append(gameMap[newVal].lastSpoken, i)
 				newV.timesSpoken = len(gameMap[newVal].lastSpoken)
 			} else {
@@ -57,9 +57,9 @@ func main() {
 			lastSpok = newVal
 		}
 		i++
-		if i == 2020 {
+		if i == 2025 {
 			break
 		}
 	}
-	fmt.Println(input)
+	fmt.Println(input[2019])
 }
