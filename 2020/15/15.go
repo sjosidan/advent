@@ -1,35 +1,61 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
 
 type Number struct {
 	lastSpoken  []int
 	timesSpoken int
 }
 
+var input []int
+
 func main() {
-	//scanner := bufio.NewScanner(os.Stdin)
-
-	//input := []int{0, 5, 4, 1, 10, 14, 7}
+	scanner := bufio.NewScanner(os.Stdin)
 	gameMap := make(map[int]*Number)
-	input := []int{1, 3, 2}
-	n1 := Number{lastSpoken: []int{1}, timesSpoken: 1}
-	gameMap[1] = &n1
-	n2 := Number{lastSpoken: []int{2}, timesSpoken: 1}
-	gameMap[3] = &n2
-	n3 := Number{lastSpoken: []int{3}, timesSpoken: 1}
-	gameMap[2] = &n3
 
-	//input := []int{0, 5, 4, 1, 10, 14, 7}
-	i := 4
-	lastSpok := 2
+	i := 1
+	for scanner.Scan() {
+		line := scanner.Text()
+		ax := strings.Split(line, ",")
+		for _, a := range ax {
+			z, err := strconv.Atoi(a)
+			if err == nil {
+				if _, ok := gameMap[z]; ok {
+					input = append(input, z)
+					gameMap[z].lastSpoken = append(gameMap[z].lastSpoken, i)
+					gameMap[z].timesSpoken = len(gameMap[z].lastSpoken)
+					i = i + 1
+				} else {
+					input = append(input, z)
+					nx := Number{lastSpoken: []int{i}, timesSpoken: 1}
+					gameMap[z] = &nx
+					i = i + 1
+				}
+			}
+
+		}
+	}
+	fmt.Println(input)
+	for k, v := range gameMap {
+		fmt.Println(k, v.lastSpoken)
+	}
+	fmt.Println("")
+	fmt.Println("----")
+	i = len(input)
+	i = i + 1
+	lastSpok := input[len(input)-1]
 	for {
-		fmt.Println(i, lastSpok)
 
 		if len(gameMap[lastSpok].lastSpoken) == 1 {
 
 			if _, ok := gameMap[0]; !ok {
-				nx := Number{lastSpoken: []int{0}, timesSpoken: 1}
+				nx := Number{lastSpoken: []int{i}, timesSpoken: 1}
 
 				gameMap[0] = &nx
 
@@ -41,25 +67,33 @@ func main() {
 			input = append(input, 0)
 
 			lastSpok = 0
-		} else {
+		} else if len(gameMap[lastSpok].lastSpoken) > 1 {
+			newVal := gameMap[lastSpok].lastSpoken[len(gameMap[lastSpok].lastSpoken)-1] -
+				gameMap[lastSpok].lastSpoken[len(gameMap[lastSpok].lastSpoken)-2]
 
-			newVal := gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-1] -
-				gameMap[lastSpok].lastSpoken[gameMap[lastSpok].timesSpoken-2]
+			if _, ok := gameMap[newVal]; ok {
 
-			if newV, ok := gameMap[newVal]; ok {
-				newV.lastSpoken = append(gameMap[newVal].lastSpoken, i)
-				newV.timesSpoken = len(gameMap[newVal].lastSpoken)
+				gameMap[newVal].lastSpoken = append(gameMap[newVal].lastSpoken, i)
+				gameMap[newVal].timesSpoken = len(gameMap[newVal].lastSpoken)
+
 			} else {
 				nx := Number{lastSpoken: []int{i}, timesSpoken: 1}
 				gameMap[newVal] = &nx
 			}
 			input = append(input, newVal)
 			lastSpok = newVal
+		} else {
+			fmt.Println("shouldnt be here")
 		}
-		i++
-		if i == 2025 {
+
+		i = i + 1
+		if i > 30000002 {
 			break
 		}
+
 	}
-	fmt.Println(input[2019])
+	fmt.Println("A", input[2020-1])
+
+	fmt.Println("B", input[30000000-1])
+
 }
