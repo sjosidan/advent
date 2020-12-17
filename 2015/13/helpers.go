@@ -177,15 +177,3 @@ func swap(nums []string, i, j int) {
 	nums[j] = nums[i]
 	nums[i] = tmp
 }
-
-func MakeStringCirc(listA []string) (listB []string) {
-
-	s := append([]string{}, listA...)
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		s[i], s[j] = s[j], s[i]
-	}
-
-	listB = append(listA, s[1:]...)
-	listB = append([]string{s[0]}, listB...)
-	return
-}
