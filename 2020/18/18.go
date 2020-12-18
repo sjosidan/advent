@@ -8,74 +8,83 @@ import (
 	"strings"
 )
 
+type Pair struct {
+	start int
+	end   int
+}
+
+type key struct {
+	key string
+	val int
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
+	tot := 0
 	for scanner.Scan() {
+		var leftOpens []int
+		var parat []Pair
+		reps := make(map[string]int)
+		k := ""
 		line := scanner.Text()
+		k = line
+		leftOpen := 0
 
-		terms := strings.Split(line, " ")
-		//leftCounter := 0
-		//startIndex := 0
-		//var evalMe []string
-		ll := len(terms)
-		fmt.Println(line)
-		var newTerms []string
-		for i := 0; i < ll; i++ {
-			if strings.HasPrefix(terms[i], "(") {
-
-				newSlice := terms[i:]
-				_, res := parseParant(newSlice, i)
-				newTerms = append(newTerms, strconv.Itoa(res))
-			} else {
-				newTerms = append(newTerms, terms[i])
+		for a, l := range line {
+			if string(l) == "(" {
+				leftOpen++
+				leftOpens = append(leftOpens, a)
+			}
+			if string(l) == ")" {
+				leftOpen--
+				p := Pair{start: leftOpens[len(leftOpens)-1], end: a + 1}
+				leftOpens = leftOpens[:len(leftOpens)-1]
+				parat = append(parat, p)
 			}
 
 		}
-		//fmt.Println(evalParent(evalMe))
+		var keys []key
+		for _, a := range parat {
+			z, _ := evalParent(k[a.start:a.end])
+			reps[k[a.start:a.end]] = z
+			keys = append(keys, key{key: k[a.start:a.end], val: z})
+		}
+		for _, i := range keys {
+			for _, r := range keys {
+				if i.key != r.key {
+					if strings.Contains(r.key, i.key) {
+						nn, _ := evalParent(strings.Replace(r.key, i.key, strconv.Itoa(i.val), -1))
+						reps[r.key] = nn
+						delete(reps, i.key)
+
+					}
+				}
+			}
+		}
+		a := line
+		for i, k := range reps {
+			a = strings.Replace(a, i, strconv.Itoa(k), -1)
+		}
+		loc, _ := evalParent(a)
+		tot = tot + loc
+		fmt.Println(a, loc)
 	}
+	fmt.Println(tot)
+
 }
 
-func parseParant(newSlice []string, startIndex int) (res int, ll int) {
-	fmt.Println("solve,", newSlice)
-	begIndex := startIndex
-	endIndex := startIndex
-	var mySlice []string
-	for j := 0; j < len(newSlice); j++ {
-		if strings.HasPrefix(newSlice[j], "(") && j != 0 {
-			kkslice := newSlice[:j]
-			_, z := parseParant(kkslice, j)
-			j = j + z
-
-		}
-		if strings.HasSuffix(newSlice[j], ")") {
-			fmt.Println(j, newSlice)
-			val := evalParent(newSlice[:j+1])
-			j = j + len(newSlice[:j+1])
-			return val, ll
-		}
-		mySlice = append(mySlice, newSlice[j])
-
-	}
-
-	fmt.Println(begIndex, endIndex)
-
-	return 0, endIndex - begIndex
-
-}
-
-func evalParent(line []string) (tot int) {
-	fmt.Println("-----", line)
-	tot, _ = strconv.Atoi(strings.Replace(line[0], "(", "", -1))
+func evalParent(line string) (tot int, leng int) {
+	s := strings.Split(line, " ")
+	tot, _ = strconv.Atoi(strings.Replace(s[0], "(", "", -1))
 	var unescp []string
-	for _, z := range line {
+	for _, z := range s {
 		n := strings.Replace(z, ")", "", -1)
 		n = strings.Replace(n, "(", "", -1)
 		unescp = append(unescp, n)
 	}
-	fmt.Println(unescp)
 	for i := 1; i < len(unescp)-1; i++ {
 
-		if line[i] == "+" {
+		if s[i] == "+" {
 			n, _ := strconv.Atoi(unescp[i+1])
 			tot = tot + n
 		} else {
@@ -83,39 +92,8 @@ func evalParent(line []string) (tot int) {
 			tot = tot * n
 		}
 		i++
-	}
+		leng = i
 
-	return
-}
-
-/*
-func evalBlock(line []string) (tot int, blockSize int) {
-	fmt.Println(line)
-	var expr []string
-
-	for i := 0; i < len(line)-1; i++ {
-		fmt.Println(line[i], i)
-		if strings.HasSuffix(line[i], ")") {
-			fmt.Println("close")
-			expr = append(expr, line[i])
-			expr[0] = strings.Replace(line[0], "(", "", -1)
-			expr[len(expr)-1] = strings.Replace(line[i], ")", "", -1)
-			fmt.Println(expr, line[i])
-			tot = evalParent(expr)
-			return tot, len(expr)
-
-		}
-		if strings.HasPrefix(line[i], "(") && i != 0 {
-			fmt.Println("open")
-			n, inc := evalBlock(line[i:])
-			expr = append(expr, strconv.Itoa(n))
-			fmt.Println("---", n)
-			i = i + inc
-			tot = tot + i
-		}
-
-		expr = append(expr, line[i])
 	}
 	return
 }
-*/
