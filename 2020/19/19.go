@@ -34,9 +34,7 @@ func main() {
 		if line == "" {
 			parseRules = false
 		} else if parseRules {
-			//rLeng := len(kk[0]) + 1
-			//	if !(strings.HasPrefix(line, "8:")) {
-			//		if !(strings.HasPrefix(line, "11:")) {
+
 			r := Rule{id: kk[0][:len(kk[0])-1], s: line[len(kk[0])+1:]}
 			if kk[1] == "\"b\"" {
 				r = Rule{id: kk[0][:len(kk[0])-1], s: "b"}
@@ -51,8 +49,7 @@ func main() {
 			}
 			rules = append(rules, r)
 			ruleMap[r.id] = r
-			//		}
-			//	}
+
 		} else {
 			if buildRule {
 				fmt.Println(ruleMap["42"].s)
@@ -75,6 +72,7 @@ func main() {
 				buildRule = false
 			}
 			if trimRules[line] {
+				// PUT first rule to 000 to count ass A
 				//				matches++
 			}
 
@@ -141,7 +139,6 @@ func expandRule(r string, listOfRules []Rule, iteration int) {
 	//var ll []string
 	z := ""
 	spliiter := strings.Split(r, " ")
-	//fmt.Println("----", spliiter)
 	for i, b := range spliiter {
 		if strings.Contains(ruleMap[b].s, "|") {
 
@@ -161,12 +158,10 @@ func expandRule(r string, listOfRules []Rule, iteration int) {
 
 	}
 	z = strings.Replace(z, "  ", " ", -1)
-	// fmt.Println(z)
 
 	k := z
 	x := 0
 	expandMe := make(map[string]bool)
-	//fmt.Println(len(expandMe))
 	var pooo map[string]bool
 	firstTime := true
 	for {
@@ -236,28 +231,17 @@ func expandRule(r string, listOfRules []Rule, iteration int) {
 		//	fmt.Println(i)
 		if alphaOnly(i) {
 			if iteration == 1 {
-				//fmt.Println("adding to 042")
 				oKRules[i] = true
 			} else {
-				//	fmt.Println("adding to 031")
 				oKRules2[i] = true
 			}
 		} else {
-			//fmt.Println(len(expandMe))
-			//fmt.Println(i)
+
 			if !strings.Contains(i, "|") {
 				expandRule(i, listOfRules, iteration)
 			}
 		}
 	}
-	// fmt.Println(expandMe)
-	/*ll = append(ll, z)
-	for r, z := range ll {
-
-	}
-	*/
-	//fmt.Println("rule ", z, " ")
-	//	fmt.Println(ll)
 
 }
 
