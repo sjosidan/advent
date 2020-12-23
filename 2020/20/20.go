@@ -9,21 +9,16 @@ import (
 type Tile struct {
 	label          string
 	orientation1   [10][10]string
-	border1        string
-	border2        string
-	border3        string
-	border4        string
+	orientation2   [10][10]string
+	orientation3   [10][10]string
+	orientation4   [10][10]string
 	rotation       string
 	unmatchedEdges int
 }
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	borderMap := make(map[string][]Tile)
-	ugg := make(map[string]int)
-
 	parseTileLabel := true
-	//newTile := false
 	tileName := ""
 	var tiles []string
 	x := 0
@@ -31,37 +26,16 @@ func main() {
 	var tile Tile
 	for scanner.Scan() {
 		line := scanner.Text()
-
 		if parseTileLabel {
 			tileName = line
 			parseTileLabel = false
 			tiles = append(tiles, tileName)
 			x = 0
-			tile = Tile{label: tileName}
-
+			tile = Tile{label: tileName, rotation: "N"}
 		} else if line == "" {
 			parseTileLabel = true
 			tileMap[tileName] = tile
-
 		} else {
-			tile.border2 = tile.border2 + string(line[0])
-			tile.border3 = tile.border3 + string(line[9])
-
-			if x == 0 {
-				tile.border1 = line
-
-			}
-			if x == 9 {
-				tile.border4 = Reverse(line)
-				tile.rotation = "N"
-				tile.border2 = Reverse(tile.border2)
-				borderMap[tile.border1] = append(borderMap[tile.border1], tile)
-				borderMap[tile.border2] = append(borderMap[tile.border2], tile)
-				borderMap[tile.border3] = append(borderMap[tile.border3], tile)
-				borderMap[tile.border4] = append(borderMap[tile.border4], tile)
-
-			}
-
 			for l, z := range line {
 				tile.orientation1[x][l] = string(z)
 
@@ -72,44 +46,95 @@ func main() {
 	}
 
 	for z, r := range tileMap {
-		fmt.Println(z, r.rotation)
-		fmt.Println(r.border1)
-		fmt.Println(r.border2)
-		fmt.Println(r.border3)
-		fmt.Println(r.border4)
-		for _, rr := range r.orientation1 {
-			fmt.Println(rr)
-		}
+		or2 := rotate(r.orientation1)
+		r.orientation2 = or2
+		or3 := rotate(or2)
+		r.orientation3 = or3
+		or4 := rotate(or3)
+		r.orientation4 = or4
+		tileMap[z] = r
 	}
-
-	for a, r := range borderMap {
-		if len(r) == 1 {
-			for _, z := range r {
-				fmt.Println(a, z.label)
-				ugg[z.label]++
-
+	inner := 0
+	for s := range tileMap {
+		myBorders := getBorders(tileMap[s].orientation1)
+		//fmt.Println(myBorders)
+		totalTileMatches := 0
+		for k, r := range tileMap {
+			if s != k {
+				found := false
+				for _, m := range getBorders(r.orientation1) {
+					cont, _ := ContainsString(myBorders, m)
+					if cont {
+						found = true
+					}
+				}
+				for _, m := range getBorders(r.orientation2) {
+					cont, _ := ContainsString(myBorders, m)
+					if cont {
+						found = true
+					}
+				}
+				for _, m := range getBorders(r.orientation3) {
+					cont, _ := ContainsString(myBorders, m)
+					if cont {
+						found = true
+					}
+				}
+				for _, m := range getBorders(r.orientation4) {
+					cont, _ := ContainsString(myBorders, m)
+					if cont {
+						found = true
+					}
+				}
+				if found {
+					totalTileMatches++
+				}
 			}
 		}
-	}
-	fmt.Println(ugg)
-
-	for z, r := range ugg {
-		if r == 2 {
-			fmt.Println(z, "must be corner")
-		}
-		if r == 1 {
-			fmt.Println(z, "must be edge")
+		if totalTileMatches == 2 {
+			fmt.Println("Found corners tiles for", s)
+		} else if totalTileMatches == 3 {
+			fmt.Println("Found edges", s)
+		} else {
+			fmt.Println("inner", s, totalTileMatches)
+			inner++
 		}
 	}
+	fmt.Println("inners", inner)
 
-	//fmt.Println(borderMap)
-	//	perms := PermuteStringsSlice(tiles)
-	//fmt.Println(perms)
 }
 
-func Reverse(s string) (result string) {
-	for _, v := range s {
-		result = string(v) + result
+func rotate(matrix [10][10]string) (res [10][10]string) {
+	n := len(matrix)
+	x := n / 2
+	y := n - 1
+	for i := 0; i < x; i++ {
+		for j := i; j < y-i; j++ {
+			k := matrix[i][j]
+			matrix[i][j] = matrix[y-j][i]
+			matrix[y-j][i] = matrix[y-i][y-j]
+			matrix[y-i][y-j] = matrix[j][y-i]
+			matrix[j][y-i] = k
+		}
 	}
+	res = matrix
+	return
+}
+
+func getBorders(matri [10][10]string) (borders []string) {
+	border1 := ""
+	border2 := ""
+	border3 := ""
+	border4 := ""
+	for i := 0; i < 10; i++ {
+		border1 = border1 + matri[0][i]
+		border2 = border2 + matri[i][0]
+		border3 = border3 + matri[9][i]
+		border4 = border4 + matri[i][9]
+	}
+	borders = append(borders, border1)
+	borders = append(borders, border2)
+	borders = append(borders, border3)
+	borders = append(borders, border4)
 	return
 }

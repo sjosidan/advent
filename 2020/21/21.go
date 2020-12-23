@@ -9,6 +9,10 @@ import (
 )
 
 func main() {
+	/*
+	*
+	* Trimmed input , removed all ) and commas for easier parsing.
+	 */
 	scanner := bufio.NewScanner(os.Stdin)
 	allargenMap := make(map[string][]string)
 	ingridientMap := make(map[string]int)
